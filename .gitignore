@@ -7,3 +7,4 @@ backend/staticfiles/
 backend/media/
 node_modules/
 dist/
+private_uploads/

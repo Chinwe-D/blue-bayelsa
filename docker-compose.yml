@@ -23,12 +23,14 @@ services:
       DATABASE_URL: postgis://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       STATIC_ROOT: /app/staticfiles
       MEDIA_ROOT: /app/media
+      PRIVATE_UPLOAD_ROOT: /app/private_uploads
     depends_on:
       db:
         condition: service_healthy
     volumes:
       - static:/app/staticfiles
       - media:/app/media
+      - private_uploads:/app/private_uploads
 
   web:
     image: nginx:1.27-alpine
@@ -44,5 +46,6 @@ services:
 
 volumes:
   pgdata:
+  private_uploads:
   static:
   media:

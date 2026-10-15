@@ -9,6 +9,7 @@ A web and Android platform for discovering blue-economy activities, enterprises,
 | 1. Requirements analysis | Done |
 | 2. System architecture | Done |
 | Foundation (backend skeleton) | **Done**: see below |
+| Bulk upload engine | **Done** (backend); admin screens come next |
 | 3. Data model | Waiting for the field questionnaire and the definition of the eight sectors |
 | 4–11 | Not started |
 
@@ -21,7 +22,8 @@ A web and Android platform for discovering blue-economy activities, enterprises,
 - **GPS validation**: points outside Bayelsa are rejected, and swapped latitude/longitude is detected.
 - **API**: separate `/api/v1/public/` (published data only) and `/api/v1/admin/` (staff, role-checked) areas, plus `/api/v1/auth/`. OpenAPI docs are at `/api/v1/docs/` in development only.
 - **Security**: Argon2 passwords, HttpOnly session cookies, CSRF protection including on login, a login rate limit, no hard deletion of reference data, and secrets only in environment variables.
-- **Tests**: 30 automated tests (`cd backend && pytest`).
+- **Bulk upload engine** (`apps/imports`): Excel templates generated from the database (dropdown lists, red required headings, instructions sheet, pre-filled rows), safe reading of `.xlsx`/`.csv` (checks real file contents, size and row limits; formulas never run), row-by-row checks with plain-language messages and "Did you mean…?" suggestions, duplicate detection within the file, correcting or skipping individual rows, and import only after explicit confirmation. Every batch is kept for traceability and audited. The first importer is **Community GPS locations**; enterprises, indicators and opportunities plug into the same engine once the questionnaire defines them.
+- **Tests**: 52 automated tests (`cd backend && pytest`).
 - **Deployment**: Docker Compose with PostGIS, the Django API (Gunicorn) and Nginx.
 
 ## Run it with Docker
@@ -57,6 +59,7 @@ backend/
   apps/audit/        append-only audit log
   apps/governance/   data sources, GovernedModel base class, publication workflow, GPS validation
   apps/geo/          LGAs, communities, sectors, activities (+ public and admin API)
+  apps/imports/      bulk upload: templates, file reading, row checks, corrections, import
   apps/api/          URL routing for public / admin / auth
   tests/             automated tests
 deploy/nginx/        Nginx configuration

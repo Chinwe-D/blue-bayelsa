@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "apps.audit",
     "apps.governance",
     "apps.geo",
+    "apps.imports",
 ]
 
 MIDDLEWARE = [
@@ -162,3 +163,8 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "root": {"handlers": ["console"], "level": env("LOG_LEVEL", default="INFO")},
 }
+
+# Uploaded data files are kept outside the web root and never served directly.
+PRIVATE_UPLOAD_ROOT = env("PRIVATE_UPLOAD_ROOT", default=str(BASE_DIR / "private_uploads"))
+IMPORT_MAX_FILE_MB = env.int("IMPORT_MAX_FILE_MB", default=10)
+IMPORT_MAX_ROWS = env.int("IMPORT_MAX_ROWS", default=5000)

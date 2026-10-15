@@ -13,6 +13,7 @@ from apps.accounts import views as auth_views
 from apps.audit.views import AuditLogViewSet
 from apps.geo import views as geo
 from apps.governance.views import DataSourceViewSet
+from apps.imports import views as imports
 
 public = DefaultRouter()
 public.register("lgas", geo.PublicLGAViewSet, basename="public-lga")
@@ -27,6 +28,7 @@ admin.register("sectors", geo.AdminSectorViewSet, basename="admin-sector")
 admin.register("activities", geo.AdminActivityViewSet, basename="admin-activity")
 admin.register("data-sources", DataSourceViewSet, basename="admin-datasource")
 admin.register("audit-log", AuditLogViewSet, basename="admin-auditlog")
+admin.register("imports", imports.ImportBatchViewSet, basename="admin-import")
 
 auth = [
     path("csrf/", auth_views.CsrfView.as_view(), name="auth-csrf"),
@@ -37,6 +39,8 @@ auth = [
 
 urlpatterns = [
     path("public/", include(public.urls)),
+    path("admin/importers/", imports.ImporterListView.as_view(), name="admin-importers"),
+    path("admin/importers/<slug:key>/template/", imports.TemplateView.as_view(), name="admin-import-template"),
     path("admin/", include(admin.urls)),
     path("auth/", include(auth)),
 ]
