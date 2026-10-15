@@ -1,0 +1,19 @@
+flowchart TB
+    start((" ")):::startend --> a1["Enumerator interviews enterprise<br/>KoboCollect on phone, GPS captured"]
+    a1 --> a2["Forms upload to KoboToolbox<br/>when network is available"]
+    a2 --> a3["Project staff export survey data<br/>as Excel"]
+    a3 --> a4["Upload to Blue Bayelsa admin portal"]
+    a4 --> d1{"All rows pass checks?"}
+    d1 -- "no" --> a5["Correct or skip rows<br/>in the browser"]
+    a5 --> d1
+    d1 -- "yes" --> a6["Import as Draft records<br/>linked to data source and file"]
+    a6 --> a7["Submit for approval"]
+    a7 --> d2{"Reviewer decision"}
+    d2 -- "return" --> a8["Data entry corrects record"]
+    a8 --> a7
+    d2 -- "reject" --> stop1((" ")):::startend
+    d2 -- "approve" --> a9["Record published"]
+    a9 --> par["Scores recalculated<br/>dashboard and map updated"]
+    par --> stop2((" ")):::startend
+
+    classDef startend fill:#0b4f6c,stroke:#0b4f6c,color:#0b4f6c

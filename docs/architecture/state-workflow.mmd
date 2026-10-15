@@ -1,0 +1,17 @@
+stateDiagram-v2
+    direction LR
+    [*] --> Draft: created manually or by upload
+    Draft --> Submitted: submit [data entry]
+    Submitted --> Approved: approve [reviewer, not the creator]
+    Submitted --> Returned: return with reason [reviewer]
+    Submitted --> Rejected: reject with reason [reviewer]
+    Returned --> Submitted: correct and resubmit
+    Approved --> Archived: archive with reason [administrator]
+    Draft --> Archived: archive [administrator]
+    Returned --> Archived: archive [administrator]
+    Rejected --> Archived: archive [administrator]
+    Archived --> [*]
+    note right of Approved
+        Published: visible on the
+        public website and Android app
+    end note

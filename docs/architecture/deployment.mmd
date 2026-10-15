@@ -1,0 +1,35 @@
+flowchart LR
+    subgraph user["User devices"]
+        b["Web browser<br/>desktop or phone"]
+        a["Android phone<br/>Blue Bayelsa app"]
+    end
+
+    subgraph vps["Cloud VPS: Ubuntu Linux, Docker Engine"]
+        subgraph compose["docker compose"]
+            c1["web container<br/>nginx:1.27-alpine<br/>ports 80, 443"]
+            c2["api container<br/>Python 3.12, Gunicorn, Django"]
+            c3["db container<br/>postgis/postgis:16-3.4"]
+        end
+        v1[("volume: pgdata")]
+        v2[("volume: private_uploads")]
+        v3[("volume: static, media")]
+        cron["cron: nightly backup script"]
+    end
+
+    gh["GitHub<br/>Chinwe-D/blue-bayelsa<br/>source code"]
+    ci["GitHub Actions<br/>tests, Android build"]
+    le["Let's Encrypt"]
+    store["Off-site object storage<br/>encrypted backups, 30 days"]
+    mon["Uptime monitor<br/>email alerts"]
+    gplay["Google Play Store"]
+
+    b & a -- "HTTPS 443" --> c1
+    c1 --> c2 --> c3
+    c3 --- v1
+    c2 --- v2 & v3
+    c1 --- v3
+    cron -- "pg_dump + files" --> store
+    gh -- "git pull, docker compose up" --> vps
+    gh --> ci -- "signed .aab" --> gplay
+    le -- "certificate renewal" --> c1
+    mon -- "checks /api/health/" --> c1

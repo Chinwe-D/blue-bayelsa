@@ -1,0 +1,27 @@
+flowchart TB
+    inv["Investor<br/><i>finds and compares opportunities</i>"]:::person
+    gov["Government agency<br/><i>monitors sectors and gaps</i>"]:::person
+    res["Researcher<br/><i>downloads datasets</i>"]:::person
+    ent["Enterprise<br/><i>is listed in the directory</i>"]:::person
+    pub["Public visitor<br/><i>explores communities and map</i>"]:::person
+    staff["Project staff<br/><i>data entry, reviewers, administrators</i>"]:::person
+
+    sys["Blue Bayelsa Invest<br/>Web and Android platform for blue-economy<br/>data, enterprises and investment opportunities"]:::system
+
+    kobo["KoboToolbox<br/>Field survey collection"]:::ext
+    osm["OpenStreetMap<br/>Basemap data for Bayelsa"]:::ext
+    le["Let's Encrypt<br/>Free HTTPS certificates"]:::ext
+    bk["Off-site backup storage"]:::ext
+    play["Google Play Store<br/>Android distribution"]:::ext
+
+    inv & gov & res & ent & pub -- "browse, search, download<br/>(HTTPS)" --> sys
+    staff -- "enter, upload, review, approve<br/>(HTTPS, login)" --> sys
+    kobo -. "survey exports (Excel)<br/>uploaded by staff" .-> sys
+    osm -. "one-off basemap extract" .-> sys
+    le -. "certificates" .-> sys
+    sys -- "nightly encrypted backup" --> bk
+    play -. "installs Android app" .-> pub
+
+    classDef person fill:#0b4f6c,stroke:#063247,color:#ffffff
+    classDef system fill:#1f7a9c,stroke:#0b4f6c,color:#ffffff,font-weight:bold
+    classDef ext fill:#e3e8ec,stroke:#8a99a6,color:#1d2a33

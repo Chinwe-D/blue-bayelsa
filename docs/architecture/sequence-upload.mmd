@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor DE as Data entry officer
+    participant UI as Admin portal
+    participant API as Django API
+    participant IMP as Importer
+    participant DB as PostgreSQL
+    actor RV as Reviewer
+
+    DE->>UI: Download template
+    UI->>API: GET /admin/importers/{type}/template/
+    API-->>UI: Excel file with dropdowns and instructions
+    DE->>UI: Upload filled file
+    UI->>API: POST /admin/imports/ (file)
+    API->>API: Check file type, size, row limit
+    API->>IMP: Check every row
+    IMP->>DB: Look up LGAs, communities, existing records
+    IMP-->>API: Errors, warnings, duplicates per row
+    API->>DB: Save batch and rows in staging tables
+    API-->>UI: Summary: ready / errors / duplicates
+    loop Until no problems remain
+        DE->>UI: Correct or skip a row
+        UI->>API: PATCH /admin/imports/{id}/rows/{row}/
+        API->>IMP: Re-check rows
+        API-->>UI: Updated row status
+    end
+    DE->>UI: Import
+    UI->>API: POST /admin/imports/{id}/commit/
+    API->>DB: Create records as Draft, write audit log
+    DE->>UI: Submit drafts for approval
+    RV->>UI: Open approval queue
+    RV->>API: Approve (not own records)
+    API->>DB: Status Approved, record approver and time
+    Note over API,DB: Only approved records are returned by /api/v1/public/

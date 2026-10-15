@@ -1,0 +1,25 @@
+flowchart LR
+    subgraph clients["Clients"]
+        web["Web application<br/><b>React + TypeScript</b><br/>public site and admin portal"]:::built_planned
+        apk["Android application<br/><b>Capacitor</b> (same React code)<br/>offline cache of viewed data"]:::planned
+    end
+
+    subgraph server["Single cloud server (Docker Compose)"]
+        nginx["Web server<br/><b>Nginx</b><br/>HTTPS, compression, static files"]:::built
+        api["API application<br/><b>Django + Django REST Framework</b><br/>business rules, permissions, scoring"]:::built
+        db[("Database<br/><b>PostgreSQL + PostGIS</b><br/>records, locations, audit log")]:::built
+        files[("Private file store<br/>uploaded Excel/CSV, photos")]:::built
+        tiles[("Basemap file<br/><b>PMTiles</b> extract of Bayelsa")]:::planned
+    end
+
+    web -- "JSON over HTTPS<br/>/api/v1/public, /api/v1/admin" --> nginx
+    apk -- "JSON over HTTPS<br/>/api/v1/public" --> nginx
+    web & apk -- "map tiles" --> nginx
+    nginx -- "proxy /api" --> api
+    nginx -. "serves" .-> tiles
+    api -- "SQL / spatial queries" --> db
+    api -- "read / write" --> files
+
+    classDef built fill:#1f7a9c,stroke:#0b4f6c,color:#ffffff
+    classDef built_planned fill:#1f7a9c,stroke:#0b4f6c,color:#ffffff,stroke-dasharray:5 3
+    classDef planned fill:#ffffff,stroke:#1f7a9c,color:#0b4f6c,stroke-dasharray:5 3

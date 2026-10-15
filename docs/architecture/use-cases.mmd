@@ -1,0 +1,36 @@
+flowchart LR
+    visitor(["Public visitor"]):::actor
+    reg(["Registered user<br/>investor, government,<br/>researcher, partner"]):::actor
+    dataentry(["Data entry officer"]):::actor
+    reviewer(["Reviewer"]):::actor
+    admin(["Administrator"]):::actor
+
+    subgraph system["Blue Bayelsa Invest"]
+        uc1(["Explore communities and map"])
+        uc2(["Search enterprise directory"])
+        uc3(["View opportunities and scores"])
+        uc4(["View dashboard"])
+        uc5(["Download filtered data"])
+        uc6(["Send enquiry or partnership request"])
+        uc7(["Enter records manually"])
+        uc8(["Upload Excel / CSV"])
+        uc9(["Correct rows and submit"])
+        uc10(["Approve, return or reject records"])
+        uc11(["Configure scoring criteria and weights"])
+        uc12(["Manage indicators"])
+        uc13(["Manage users and roles"])
+        uc14(["Manage reference data"])
+        uc15(["View audit log"])
+        uc16(["Archive records"])
+    end
+
+    visitor --- uc1 & uc2 & uc3 & uc4
+    reg --- uc5 & uc6
+    reg -. "inherits" .-> visitor
+    dataentry --- uc7 & uc8 & uc9
+    reviewer --- uc10 & uc11 & uc12
+    reviewer -. "inherits" .-> dataentry
+    admin --- uc13 & uc14 & uc15 & uc16
+    admin -. "inherits" .-> reviewer
+
+    classDef actor fill:#0b4f6c,stroke:#063247,color:#ffffff

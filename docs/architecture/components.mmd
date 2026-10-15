@@ -1,0 +1,33 @@
+flowchart TB
+    subgraph api["Django API application"]
+        direction TB
+        router["API router<br/>public / admin / auth"]:::built
+
+        subgraph core["Core services (built)"]
+            accounts["accounts<br/>users, roles, capabilities"]:::built
+            governance["governance<br/>workflow, data sources, GPS checks"]:::built
+            audit["audit<br/>append-only log"]:::built
+            geo["geo<br/>LGAs, communities, sectors, activities"]:::built
+            imports["imports<br/>templates, file checks, row validation"]:::built
+        end
+
+        subgraph domain["Domain modules (Phase 3 to 8)"]
+            enterprises["enterprises<br/>profiles, directory"]:::planned
+            indicators["indicators<br/>definitions, values"]:::planned
+            infra["infrastructure<br/>jetties, cold rooms, markets"]:::planned
+            opps["opportunities<br/>+ scoring engine"]:::planned
+            dash["dashboard<br/>statistics"]:::planned
+            reports["reports<br/>CSV / Excel export"]:::planned
+        end
+    end
+
+    router --> accounts & geo & imports
+    imports --> governance & geo
+    governance --> accounts & audit
+    domain -. "all inherit the publication workflow" .-> governance
+    imports -. "one importer per record type" .-> domain
+    opps -. "scores from" .-> indicators
+    dash -. "reads published records" .-> opps
+
+    classDef built fill:#1f7a9c,stroke:#0b4f6c,color:#ffffff
+    classDef planned fill:#ffffff,stroke:#1f7a9c,color:#0b4f6c,stroke-dasharray:5 3

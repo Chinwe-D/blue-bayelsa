@@ -1,0 +1,84 @@
+erDiagram
+    USER }o--o{ ROLE : "has"
+    USER ||--o{ AUDIT_LOG : "performs"
+    USER ||--o{ IMPORT_BATCH : "uploads"
+    LGA ||--|{ COMMUNITY : "contains"
+    SECTOR |o--o{ ACTIVITY : "groups"
+    DATA_SOURCE |o--o{ IMPORT_BATCH : "describes"
+    IMPORT_BATCH ||--|{ IMPORT_ROW : "holds"
+    USER ||--o{ APPROVAL_RECORD : "decides"
+
+    USER {
+        int id PK
+        string username
+        string email
+        string organisation
+    }
+    ROLE {
+        int id PK
+        string name "Data entry officer, Reviewer, Administrator"
+    }
+    LGA {
+        int id PK
+        string name
+        multipolygon boundary
+    }
+    COMMUNITY {
+        int id PK
+        int lga_id FK
+        string name
+        point location "WGS84"
+        string location_source
+        bool is_survey_community
+    }
+    SECTOR {
+        int id PK
+        string name
+        int display_order
+    }
+    ACTIVITY {
+        int id PK
+        int sector_id FK
+        string name
+    }
+    DATA_SOURCE {
+        int id PK
+        string name
+        string organisation
+        string responsible_person
+        date collection_start
+        date collection_end
+    }
+    IMPORT_BATCH {
+        uuid id PK
+        string importer
+        string original_filename
+        string status
+        int uploaded_by FK
+        datetime committed_at
+    }
+    IMPORT_ROW {
+        int id PK
+        uuid batch_id FK
+        int row_number
+        json raw
+        json errors
+        string status
+    }
+    APPROVAL_RECORD {
+        int id PK
+        string record_type
+        string record_id
+        string action
+        string from_status
+        string to_status
+        datetime timestamp
+    }
+    AUDIT_LOG {
+        int id PK
+        datetime timestamp
+        string action
+        string target
+        json details
+        string ip_address
+    }
